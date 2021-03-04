@@ -1,0 +1,29 @@
+name: Terraform
+description: Runs Terraform in Plenti pipeline.
+author: https://github.com/plentiau
+requirements:
+  - docker
+configuration:
+  properties:
+    work_dir:
+      type: string
+    action:
+      type: string
+    debug:
+      type: boolean
+    env:
+      type: [string, array]
+    image:
+      type: string
+    version:
+      type: string
+    init_args:
+      type: [string, array]
+    tf_envs:
+      type: [string, array]
+    precommand:
+      type: string
+    volumes:
+      type: [string, array]
+    ecr_repo:
+      type: string
