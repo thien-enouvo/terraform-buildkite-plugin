@@ -12,7 +12,6 @@ set -euo pipefail
 # Default for terraform directories.
 TF_DIR=${BUILDKITE_PLUGIN_TERRAFORM_WORK_DIR:-terraform}
 action_list=( validate plan apply )
-BUILDKITE_PLUGIN_TERRAFORM_ACTION="dsada"
 
 # We do this to cover cases where modules are stored in GitHub.
 # Without this, the container hangs forever waiting for confirmation.
