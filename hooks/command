@@ -58,6 +58,7 @@ function terraform-bin() {
     "--rm"
     "-it"
     "-v" "$PWD:/svc"
+    "--entrypoint" "/bin/sh"
     "-v" "$KNOWN_HOSTS_FILE:/root/.ssh/known_hosts"
   )
 
