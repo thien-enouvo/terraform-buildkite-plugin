@@ -58,7 +58,6 @@ function terraform-bin() {
     "--rm"
     "-it"
     "-v" "$PWD:/svc"
-    "--entrypoint" "/bin/sh"
     "-v" "$KNOWN_HOSTS_FILE:/root/.ssh/known_hosts"
   )
 
@@ -132,9 +131,9 @@ function terraform-run() {
   echo ""
   if [[ "${ACTION}" == "validate" ]]; then
     echo "-- Validating modules"
-    find ${WORK_DIR}/modules -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform init -backend=false && terraform validate" \;
+    find ${WORK_DIR}/modules -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform-bin init -backend=false && terraform validate" \;
     echo "-- Validating environments"
-    find ${WORK_DIR}/environments -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform init -backend=false && terraform validate" \;  
+    find ${WORK_DIR}/environments -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform-bin init -backend=false && terraform validate" \;  
   fi
 
   if [[ "${ACTION}" == "plan" ]]; then
@@ -147,7 +146,7 @@ function terraform-run() {
     terraform init
 
     set +e
-    terraform plan ${tf_envs[@]} -detailed-exitcode -out $ENVIRONMENT.tfplan
+    terraform-bin plan ${tf_envs[@]} -detailed-exitcode -out $ENVIRONMENT.tfplan
     terraform_exit_status=$?
     set -e
     cd $pwd
@@ -202,7 +201,7 @@ steps:
 EOF
 ) | buildkite-agent pipeline upload
       cd $environment_dir
-      terraform show -no-color -json $ENVIRONMENT.tfplan 1>$ENVIRONMENT.json
+      terraform-bin show -no-color -json $ENVIRONMENT.tfplan 1>$ENVIRONMENT.json
       cd $pwd
       ;;
     *)
@@ -222,7 +221,7 @@ EOF
       cd $environment_dir
       buildkite-agent artifact download $ENVIRONMENT.tfplan .
 
-      terraform init
+      terraform-bin init
       echo "Teraform apply"
       #terraform apply -auto-approve $ENVIRONMENT.tfplan
 
