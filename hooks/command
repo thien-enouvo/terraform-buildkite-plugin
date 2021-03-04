@@ -235,4 +235,5 @@ EOF
       echo "Skipping because no changes required."
     fi
   fi
+}
 terraform-run
