@@ -1,8 +1,4 @@
-#!/bin/bash
-set -euo pipefail
-
-#!/bin/bash
-
+#!/bin/sh
 set -euo pipefail
 
 #########
@@ -49,7 +45,7 @@ function prefix_read_list() {
   fi
 }
 
-terraformBin () {
+function terraform_bin() {
   local DOCKER_IMAGE="${IMAGE_NAME}:${VERSION}"
 
   docker_args=()
@@ -127,13 +123,13 @@ function terraform-run() {
   fi
 
 
-  terraformBin init "${args[@]}"
+  terraform_bin init "${args[@]}"
   echo ""
   if [[ "${ACTION}" == "validate" ]]; then
     echo "-- Validating modules"
-    find ${WORK_DIR}/modules -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraformBin init -backend=false && terraformBin validate" \;
+    find ${WORK_DIR}/modules -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform_bin init -backend=false && terraform_bin validate" \;
     echo "-- Validating environments"
-    find ${WORK_DIR}/environments -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraformBin init -backend=false && terraformBin validate" \;  
+    find ${WORK_DIR}/environments -mindepth 1 -maxdepth 1 -type d -exec sh -c "cd '{}' && terraform_bin init -backend=false && terraform_bin validate" \;  
   fi
 
   if [[ "${ACTION}" == "plan" ]]; then
@@ -143,10 +139,10 @@ function terraform-run() {
 
     cd $environment_dir
 
-    terraformBin init
+    terraform_bin init
 
     set +e
-    terraformBin plan ${tf_envs[@]} -detailed-exitcode -out $ENVIRONMENT.tfplan
+    terraform_bin plan ${tf_envs[@]} -detailed-exitcode -out $ENVIRONMENT.tfplan
     terraform_exit_status=$?
     set -e
     cd $pwd
@@ -221,7 +217,7 @@ EOF
       cd $environment_dir
       buildkite-agent artifact download $ENVIRONMENT.tfplan .
 
-      terraformBin init
+      terraform_bin init
       echo "Teraform apply"
       #terraform apply -auto-approve $ENVIRONMENT.tfplan
 
