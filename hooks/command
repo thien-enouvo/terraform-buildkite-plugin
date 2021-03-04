@@ -1,8 +1,4 @@
-#!/bin/bash
-set -euo pipefail
-
-#!/bin/bash
-
+#!/bin/sh
 set -euo pipefail
 
 #########
